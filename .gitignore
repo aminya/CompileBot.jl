@@ -1,0 +1,6 @@
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+Manifest.toml
+test/*/deps/SnoopCompile/precompile/*
+test/*/src/precompile_includer.jl
