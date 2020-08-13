@@ -1,7 +1,7 @@
 # Snooping functions
 function _snoopi_bot(snoop_script, tmin)
     return quote
-        using SnoopCompile
+        using SnoopCompileCore
 
         data = @snoopi tmin=$tmin begin
             $snoop_script
@@ -11,11 +11,13 @@ end
 
 function _snoopc_bot(snoop_script)
     return quote
-        using SnoopCompile
+        using SnoopCompileCore
 
         @snoopc "compiles.log" begin
             $snoop_script
         end
+
+        using SnoopCompile
 
         data = SnoopCompile.read("compiles.log")[2]
         Base.rm("compiles.log", force = true)
@@ -105,22 +107,25 @@ function _snoop_bot_expr(config::BotConfig, snoop_script, test_modul::Module; sn
 
     julia_cmd = `julia --project=@. -e $snooping_analysis_code`
 
+    addpkg_ifnotfound(:SnoopCompileCore, test_modul)
+    addpkg_ifnotfound(:SnoopCompile, test_modul)
+    devpkg_ifnotfound(:SnoopCopmileBot, "$(dirname(@__DIR__))", test_modul)
     out = quote
         ################################################################
-        using SnoopCompile
+        using SnoopCompileBot
 
         # Environment variable to detect SnoopCompile bot
         global SnoopCompile_ENV = true
 
         ################################################################
-        $precompile_deactivator($package_path);
+        SnoopCompileBot.precompile_deactivator($package_path);
         ################################################################
 
         ### Log the compiles and analyze the compiles
         run($julia_cmd)
 
         ################################################################
-        $precompile_activator($package_path)
+        SnoopCompileBot.precompile_activator($package_path)
 
         global SnoopCompile_ENV = false
     end

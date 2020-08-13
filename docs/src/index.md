@@ -127,10 +127,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version:   # NOTE: the versions below should match those in your botconfig
+        version:   # NOTE: if not using `yml_path`, the versions below should match those in your botconfig
           - '1.4.2'
           - '1.3.1'
-        os:        # NOTE: should match the os setting of your botconfig
+        os:        # NOTE: if not using `yml_path`, should match the os setting of your botconfig
           - ubuntu-latest
           - windows-latest
           - macos-latest
@@ -144,7 +144,7 @@ jobs:
       - name: Install dependencies
         run: |
           julia --project -e 'using Pkg; Pkg.instantiate();'
-          julia -e 'using Pkg; Pkg.add(PackageSpec(url = "https://github.com/timholy/SnoopCompile.jl")); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompile; SnoopCompile.addtestdep();'
+          julia -e 'using Pkg; Pkg.add(["SnoopCompileCore", "SnoopCompile", "SnoopCompileBot"]); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();'
       - name: Generating precompile files
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: must match path
       - name: Running Benchmark

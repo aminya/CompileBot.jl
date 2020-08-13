@@ -1,5 +1,5 @@
 using Documenter
-using SnoopCompile
+using SnoopCompileBot
 
 makedocs(
     modules=[SnoopCompileBot],
