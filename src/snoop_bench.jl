@@ -3,8 +3,7 @@ function _snoopi_bench_cmd(snoop_script)
     tmin = 0.0 # For benchmarking
     return quote
         global SnoopCompile_ENV = true
-
-        using SnoopCompile
+        using SnoopCompileCore
 
         data = @snoopi tmin=$tmin begin
             $snoop_script
@@ -12,7 +11,7 @@ function _snoopi_bench_cmd(snoop_script)
 
         global SnoopCompile_ENV = false
 
-        using SnoopCompile: timesum
+        using SnoopCompileBot: timesum
         @info( "\nTotal inference time (ms): \t" * string(timesum(data, :ms)))
     end
 end
@@ -53,10 +52,13 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
     ################################################################
     julia_cmd = `julia --project=@. -e $snooping_code`
 
+    addpkg_ifnotfound(:SnoopCompileCore, test_modul)
+    devpkg_ifnotfound(:SnoopCopmileBot, "$(dirname(@__DIR__))", test_modul)
     out = quote
         package_sym = Symbol($package_name)
         ################################################################
-        using SnoopCompile
+        using SnoopCompileBot
+
         @info("""------------------------
         Benchmark Started
         ------------------------
@@ -66,7 +68,7 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
         Precompile Deactivated Benchmark
         ------------------------
         """)
-        $precompile_deactivator($package_path);
+        SnoopCompileBot.precompile_deactivator($package_path);
         ### Log the compiles
         run($julia_cmd)
         ################################################################
@@ -74,7 +76,7 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
         Precompile Activated Benchmark
         ------------------------
         """)
-        $precompile_activator($package_path);
+        SnoopCompileBot.precompile_activator($package_path);
         ### Log the compiles
         run($julia_cmd)
         @info("""------------------------
