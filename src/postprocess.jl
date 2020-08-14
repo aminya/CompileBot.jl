@@ -12,10 +12,13 @@ function postprocess()
 
     # Discard unrelated changes
     Projecttoml_path =joinpath(pwd(), "Project.toml")
-    run(`test -f $Projecttoml_path \&\& git checkout -- $Projecttoml_path`)
+    if isfile(Projecttoml_path)
+      run(`git checkout -- $Projecttoml_path`)
+    end
 
-    Manifesttoml_path =joinpath(pwd(), "Manifest.toml")
-    run(`git ls-files  $Manifesttoml_path \| grep . \&\& git checkout --  $Manifesttoml_path`)
+    # Julia doesn't support &&
+    # Manifesttoml_path =joinpath(pwd(), "Manifest.toml")
+    # run(`git ls-files  $Manifesttoml_path \| grep . \&\& git checkout --  $Manifesttoml_path`)
 
     # BUG causes issues
     # run(`(git diff -w --no-color || git apply --cached --ignore-whitespace && git checkout -- . && git reset && git add -p) || echo done`)
