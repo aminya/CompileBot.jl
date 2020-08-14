@@ -150,7 +150,7 @@ function BotConfig(
         # file not found
     finally
         if isfile(yml_path_error) && !occursin("SnoopCompileBot.postprocess()", Base.read(yml_path_error, String))
-            error("""Please update the `SnoopCompile.yml` based on the new API: 
+            error("""Please update the `SnoopCompile.yml` based on the new API:
             https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1
             """)
         end
@@ -192,7 +192,6 @@ include("precompile_include.jl")
 include("precompile_activation.jl")
 include("snoop_bot.jl")
 include("snoop_bench.jl")
-include("deprecations.jl")
 include("postprocess.jl")
 
 
