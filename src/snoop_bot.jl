@@ -185,7 +185,7 @@ In this case, the bot-running script is placed in the same directory as the
 precompile script, so we can use `@__DIR__` to find it:
 
 ```julia
-using SnoopCompile
+using SnoopCompileBot
 
 snoop_bot(BotConfig("MatLang"), "\$(@__DIR__)/example_script.jl")
 ```

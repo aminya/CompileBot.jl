@@ -150,8 +150,8 @@ function BotConfig(
         # file not found
     finally
         if isfile(yml_path_error) && !occursin("SnoopCompileBot.postprocess()", Base.read(yml_path_error, String))
-            error("""Please update the `SnoopCompile.yml` based on the new API:
-            https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1
+            error("""
+            SnoopCompileBot is now in a separate repository, and the API is changed because of that. Call `using SnoopCompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
             """)
         end
     end

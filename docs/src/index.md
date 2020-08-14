@@ -46,7 +46,7 @@ with a name like `snoop_bot.jl`.
 The example below (from [here](https://github.com/aminya/Zygote.jl/blob/SnoopCompile/deps/SnoopCompile/snoop_bot.jl)) supports multiple operating systems, multiple Julia versions, and excludes a function whose precompilation would be problematic:
 
 ```julia
-using SnoopCompile
+using SnoopCompileBot
 
 botconfig = BotConfig(
   "Zygote";                            # package name (the one this configuration lives in)
@@ -63,7 +63,7 @@ snoop_bot(
 If you choose to use your "runtests.jl" file as your precompile script, configuration can be as simple as specifying just the name of the package:
 
 ```julia
-using SnoopCompile
+using SnoopCompileBot
 
 snoop_bot(BotConfig("MyPackage"))
 ```
@@ -201,5 +201,7 @@ Examples of such files in projects can be found in other packages, for example
 !!! note
 
     Upgrading from an old SnoopCompile bot:
+
+    SnoopCompileBot is now in a separate repository, and the API is changed because of that. Call `using SnoopCompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
 
     In addition to the previous steps, you should also remove `_precompile_()` and any other code that includes a `_precompile_()` function. In the new version, SnoopCompile automatically creates the appropriate code.
