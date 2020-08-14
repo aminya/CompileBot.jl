@@ -116,7 +116,7 @@ bottestdir = GoodPath(@__DIR__)
         end
 
         @testset "no os, no else_os, yes version, no else_version" begin
-            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, nothing, nothing, [v"1.2", v"1.4.2"], nothing)
+            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, nothing, nothing, [v"1.2",v"1.5.0"], nothing)
             includer_text = stripall(Base.read(includer_path, String))
             @test occursin("ismultios=false", includer_text)
             @test occursin("ismultiversion=true", includer_text)
@@ -131,8 +131,8 @@ bottestdir = GoodPath(@__DIR__)
                 @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                     include("$precompiles_rootpath_rel//1.2/precompile_TestPackage0.jl")
                     _precompile_()
-                elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                    include("$precompiles_rootpath_rel//1.4/precompile_TestPackage0.jl")
+                elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                    include("$precompiles_rootpath_rel//1.5/precompile_TestPackage0.jl")
                     _precompile_()
                 else
                 end
@@ -143,7 +143,7 @@ bottestdir = GoodPath(@__DIR__)
 
 
         @testset "no os, no else_os, yes version, yes else_version" begin
-            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, nothing, nothing, [v"1.2", v"1.4.2"], v"1.4.2")
+            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, nothing, nothing, [v"1.2",v"1.5.0"],v"1.5.0")
             includer_text = stripall(Base.read(includer_path, String))
             @test occursin("ismultios=false", includer_text)
             @test occursin("ismultiversion=true", includer_text)
@@ -158,11 +158,11 @@ bottestdir = GoodPath(@__DIR__)
                 @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                     include("$precompiles_rootpath_rel//1.2/precompile_$package_name.jl")
                     _precompile_()
-                elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                    include("$precompiles_rootpath_rel//1.4/precompile_$package_name.jl")
+                elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                    include("$precompiles_rootpath_rel//1.5/precompile_$package_name.jl")
                     _precompile_()
                 else
-                    include("$precompiles_rootpath_rel//1.4/precompile_$package_name.jl")
+                    include("$precompiles_rootpath_rel//1.5/precompile_$package_name.jl")
                     _precompile_()
                 end
 
@@ -171,7 +171,7 @@ bottestdir = GoodPath(@__DIR__)
         end
 
         @testset "yes os, yes else_os, yes version, no else_version" begin
-            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux", "windows"], "linux", [v"1.2", v"1.4.2"], nothing)
+            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux", "windows"], "linux", [v"1.2",v"1.5.0"], nothing)
             includer_text = stripall(Base.read(includer_path, String))
             @test occursin("ismultios=true", includer_text)
             @test occursin("ismultiversion=true", includer_text)
@@ -187,8 +187,8 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_$package_name.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
                         _precompile_()
                     else
                     end
@@ -197,8 +197,8 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/windows/1.2/precompile_$package_name.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/windows/1.4/precompile_$package_name.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/windows/1.5/precompile_$package_name.jl")
                         _precompile_()
                     else
                     end
@@ -207,8 +207,8 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_$package_name.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
                         _precompile_()
                     else
                     end
@@ -220,7 +220,7 @@ bottestdir = GoodPath(@__DIR__)
         end
 
         @testset "yes os, yes else_os, yes version, yes else_version" begin
-            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux", "windows"], "linux", [v"1.2", v"1.4.2"], v"1.4.2")
+            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux", "windows"], "linux", [v"1.2",v"1.5.0"],v"1.5.0")
             includer_text = stripall(Base.read(includer_path, String))
             @test occursin("ismultios=true", includer_text)
             @test occursin("ismultiversion=true", includer_text)
@@ -236,11 +236,11 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_$package_name.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
                         _precompile_()
                     else
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_$package_name.jl")
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
                         _precompile_()
                     end
 
@@ -248,11 +248,11 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/windows/1.2/precompile_$package_name.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/windows/1.4/precompile_$package_name.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/windows/1.5/precompile_$package_name.jl")
                         _precompile_()
                     else
-                        include("$precompiles_rootpath_rel/windows/1.4/precompile_$package_name.jl")
+                        include("$precompiles_rootpath_rel/windows/1.5/precompile_$package_name.jl")
                         _precompile_()
                     end
 
@@ -260,11 +260,11 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_$package_name.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
                         _precompile_()
                     else
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_$package_name.jl")
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
                         _precompile_()
                     end
 
@@ -275,7 +275,7 @@ bottestdir = GoodPath(@__DIR__)
         end
 
         @testset "yes os, no else_os, yes version, no else_version" begin
-            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux", "windows"], nothing, [v"1.2", v"1.4.2"], nothing)
+            SnoopCompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux", "windows"], nothing, [v"1.2",v"1.5.0"], nothing)
             includer_text = stripall(Base.read(includer_path, String))
             @test occursin("ismultios=true", includer_text)
             @test occursin("ismultiversion=true", includer_text)
@@ -291,8 +291,8 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/linux/1.2/precompile_TestPackage0.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/linux/1.4/precompile_TestPackage0.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_TestPackage0.jl")
                         _precompile_()
                     else
                     end
@@ -301,8 +301,8 @@ bottestdir = GoodPath(@__DIR__)
                     @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
                         include("$precompiles_rootpath_rel/windows/1.2/precompile_TestPackage0.jl")
                         _precompile_()
-                    elseif v"1.4.0-DEV" <= VERSION <= v"1.4.9"
-                        include("$precompiles_rootpath_rel/windows/1.4/precompile_TestPackage0.jl")
+                    elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                        include("$precompiles_rootpath_rel/windows/1.5/precompile_TestPackage0.jl")
                         _precompile_()
                     else
                     end
@@ -397,7 +397,7 @@ bottestdir = GoodPath(@__DIR__)
         end
     end
 
-    if VERSION <=  v"1.4.2"   # What is this about?
+    if VERSION <= v"1.5.0"
         @testset "snoop_bench-multiversion" begin
             include("$(package_rootpath[3])/deps/SnoopCompile/snoop_bench.jl")
         end
@@ -428,7 +428,7 @@ bottestdir = GoodPath(@__DIR__)
     @testset "yaml os and version parse" begin
         include("$(package_rootpath[5])/deps/SnoopCompile/snoop_bot.jl")
         for bc in bcs
-            @test [v"1.4.2", v"1.3.1"] == bc.version
+            @test [v"1.5.0", v"1.3.1"] == bc.version
             @test ["ubuntu-latest", "windows-latest", "macos-latest"] == bc.os
         end
     end

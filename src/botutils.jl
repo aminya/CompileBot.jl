@@ -267,7 +267,7 @@ end
 """
 Get the float version from semver version
 ```
-julia> VersionFloat(v"1.4.2")
+julia> VersionFloat(v"1.5.0")
 "1.4"
 ```
 """

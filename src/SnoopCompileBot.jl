@@ -40,14 +40,14 @@ Example: `else_os = "linux"`
 
 - `version`: A vector of of Julia versions used to generate precompile signatures.
 
-Example: `version = [v"1.1", v"1.4.2", "nightly"]`
+Example: `version = [v"1.1",v"1.5.0", "nightly"]`
 
-It is assumed that the generated precompile signatures are valid for patch versions of Julia (e.g. giving v"1.4.2" supports v"1.4.0" to v"1.4.9").
+It is assumed that the generated precompile signatures are valid for patch versions of Julia (e.g. givingv"1.5.0" supports v"1.4.0" to v"1.4.9").
 
 - `else_version`: the Julia version used to generate the default signatures for other `version`s.
 Not passing this argument skips precompilation on any Julia version other than those explicitly listed in `version`.
 
-Example: `else_version = v"1.4.2"`
+Example: `else_version =v"1.5.0"`
 
 - `yml_path`: instead of directly passing `os` and `version` to BotConfig, you can pass `yml_path` which should be the GitHub actions YAML path or file name.
 It assumes that the job name is `SnoopCompile`.
@@ -76,7 +76,7 @@ In rare cases (when snooping is very time consuming), you may want to do this ma
 botconfig1 = BotConfig(
   "Zygote";                            # package name (the one this configuration lives in)
   os = ["linux", "windows", "macos"],  # operating systems for which to precompile
-  version = [v"1.4.2", v"1.3.1"],      # supported Julia versions
+  version = [v"1.5.0", v"1.3.1"],      # supported Julia versions
   exclusions = ["SqEuclidean"],         # exclude functions (by name) that would be problematic if precompiled
 )
 
@@ -87,7 +87,7 @@ botconfig2 = BotConfig(
 )
 
 # A full example:
-BotConfig("MatLang", exclusions = ["badfunction"], os = ["linux", "windows", "macos"], else_os = "linux", version = ["1.4.2", "1.2", "1.0.5"], else_version = "1.4.2" )
+BotConfig("MatLang", exclusions = ["badfunction"], os = ["linux", "windows", "macos"], else_os = "linux", version = ["1.5.0", "1.2", "1.0.5"], else_version = "1.5.0" )
 
 # Different examples for other possibilities:
 BotConfig("MatLang")
@@ -98,11 +98,11 @@ BotConfig("MatLang", os = ["linux", "windows"])
 
 BotConfig("MatLang", os = ["windows", "linux"], else_os = "linux")
 
-BotConfig("MatLang", version = [v"1.1", v"1.4.2"])
+BotConfig("MatLang", version = [v"1.1",v"1.5.0"])
 
-BotConfig("MatLang", version = [v"1.1", v"1.4.2"], else_version = v"1.4.2")
+BotConfig("MatLang", version = [v"1.1",v"1.5.0"], else_version =v"1.5.0")
 
-BotConfig("MatLang", os = ["linux", "windows"], version = [v"1.1", v"1.4.2"])
+BotConfig("MatLang", os = ["linux", "windows"], version = [v"1.1",v"1.5.0"])
 ```
 """
 struct BotConfig

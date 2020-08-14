@@ -129,7 +129,7 @@ jobs:
 
       matrix:
         version:   # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
-          - '1.4.2'
+          - '1.5.0'
           - '1.3.1'
         os:        # NOTE: if not using `yml_path`, these should match the os in `BotConfig`
           - ubuntu-latest
