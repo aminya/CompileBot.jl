@@ -37,6 +37,7 @@ jobs:
       - uses: julia-actions/julia-uploadcodecov@latest
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   MultiOS:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ${{ matrix.os }}
@@ -67,6 +68,7 @@ jobs:
       - uses: julia-actions/julia-uploadcodecov@latest
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   MultiVersion:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
@@ -98,6 +100,24 @@ jobs:
       - name: Running Benchmark
         working-directory: ${{ matrix.test_package }}
         run: julia --code-coverage=user --project -e 'include("deps/SnoopCompile/snoop_bench.jl")'
+      - uses: julia-actions/julia-uploadcodecov@latest
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload all
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./
+
+  Create_PR:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    needs: MultiVersion
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download all
+        uses: actions/download-artifact@v2
+      - name: SnoopCompileBot postprocess
+        run: julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.postprocess();'
       - uses: julia-actions/julia-uploadcodecov@latest
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
