@@ -2,4 +2,4 @@ using SnoopCompileBot
 
 println("tests infer benchmark")
 
-snoop_bench(BotConfig("TestPackage1", tmin =0.0))
+snoop_bench(BotConfig("TestPackage0", tmin =0.0))

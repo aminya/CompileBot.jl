@@ -36,11 +36,20 @@ function _snoop_analysis_bot(snooping_code, package_name, precompile_folder, sub
         ### Parse the compiles and generate precompilation scripts
         pc = SnoopCompile.parcel(data; subst = $subst, exclusions = $exclusions, check_eval = $check_eval)
         if !haskey(pc, packageSym)
-            @error "no precompile signature is found for $($package_name). Don't load the package before snooping. Restart your Julia session."
+            @warn "no precompile signature is found for $($package_name). Don't load the package before snooping. Restart your Julia session."
+            if !isdir($precompile_folder)
+                mkpath($precompile_folder)
+            end
+            Base.write("$($precompile_folder)/precompile_$($package_name).jl", """
+            function _precompile_()
+                # nothing
+            end
+            """)
+        else # if any precompilation script is generated
+            onlypackage = Dict( packageSym => sort(pc[packageSym]) )
+            SnoopCompile.write($precompile_folder, onlypackage)
+            @info "precompile signatures were written to $($precompile_folder)"
         end
-        onlypackage = Dict( packageSym => sort(pc[packageSym]) )
-        SnoopCompile.write($precompile_folder, onlypackage)
-        @info "precompile signatures were written to $($precompile_folder)"
     end
 end
 
