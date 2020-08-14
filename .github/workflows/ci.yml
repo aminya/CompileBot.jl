@@ -5,6 +5,10 @@ on:
 defaults:
   run:
     shell: bash
+
+env:
+  SnoopCompile_coverage_ENV: true
+
 jobs:
   test:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"

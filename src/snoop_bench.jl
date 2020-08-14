@@ -50,7 +50,13 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
     snooping_code = toplevel_string(snooping_code)
 
     ################################################################
-    julia_cmd = `julia --project=@. -e $snooping_code`
+    if isdefined(Main, :SnoopCompile_coverage_ENV) && in(SnoopCompile_coverage_ENV, [true, "true"])
+        code_coverage = "user"
+    else
+        code_coverage = "none"
+    end
+
+    julia_cmd = `julia --code-coverage=$code_coverage --project=@. -e $snooping_code`
 
     addpkg_ifnotfound(:SnoopCompileCore, test_modul)
     devpkg_ifnotfound(:SnoopCopmileBot, "$(dirname(@__DIR__))", test_modul)
