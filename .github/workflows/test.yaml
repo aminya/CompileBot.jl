@@ -1,0 +1,22 @@
+name: test
+
+env:
+  SnoopCompileBot_version: 2
+
+on:
+  - push
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        SnoopCompileBot_version:
+          - 2
+    steps:
+      - run: julia -e 'using Pkg; Pkg.add("SnoopCompile", version = "${{matrix.version}}")'
