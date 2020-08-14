@@ -1,7 +1,7 @@
 using JuliaFormatter
 function postprocess()
 
-  if ENV["CI"] || ENV["CI"] !== "" || !isempty(ENV["CI"]) || !isnothing(ENV["CI"])
+  if get(ENV, "GITHUB_ACTIONS", "false") == "true"
 
     # TODO rewrite using Julia functions
 
