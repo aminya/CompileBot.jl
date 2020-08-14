@@ -68,17 +68,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Download all
         uses: actions/download-artifact@v2
-      - name: Move the content of the directory to the root
-        run: |
-          rsync -a artifact/* ./
-          rm -d -r artifact
-      - name: Discard unrelated changes
-        run: |
-          test -f &#39;Project.toml&#39; &amp;&amp; git checkout -- &#39;Project.toml&#39;
-          git ls-files &#39;Manifest.toml&#39; | grep . &amp;&amp; git checkout -- &#39;Manifest.toml&#39;
-          (git diff -w --no-color || git apply --cached --ignore-whitespace &amp;&amp; git checkout -- . &amp;&amp; git reset &amp;&amp; git add -p) || echo done
-      - name: Format precompile_includer.jl
-        run: julia -e &#39;using Pkg; Pkg.add(&quot;JuliaFormatter&quot;); using JuliaFormatter; format_file(&quot;src/precompile_includer.jl&quot;)&#39;
+      - name: SnoopCompileBot postprocess
+        run: julia -e &#39;using Pkg; Pkg.add(&quot;SnoopCompileBot&quot;); using SnoopCompileBot; SnoopCompileBot.postprocess();&#39;
       - name: Create Pull Request
         # https://github.com/marketplace/actions/create-pull-request
         uses: peter-evans/create-pull-request@v2
@@ -96,4 +87,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Skip CI 🚫
-        run: echo skip ci</code></pre><p>You can learn more about these files and the workflow process in the <a href="https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow">documentation</a>. Examples of such files in projects can be found in other packages, for example <a href="https://github.com/aminya/Zygote.jl/blob/SnoopCompile/.github/workflows/SnoopCompile.yml">Zygote</a>.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>Upgrading from an old SnoopCompile bot:</p><p>In addition to the previous steps, you should also remove <code>_precompile_()</code> and any other code that includes a <code>_precompile_()</code> function. In the new version, SnoopCompile automatically creates the appropriate code.</p></div></div></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="reference/">Syntax Reference »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 13 August 2020 09:32">Thursday 13 August 2020</span>. Using Julia version 1.6.0-DEV.632.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+        run: echo skip ci</code></pre><p>You can learn more about these files and the workflow process in the <a href="https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow">documentation</a>. Examples of such files in projects can be found in other packages, for example <a href="https://github.com/aminya/Zygote.jl/blob/SnoopCompile/.github/workflows/SnoopCompile.yml">Zygote</a>.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>Upgrading from an old SnoopCompile bot:</p><p>In addition to the previous steps, you should also remove <code>_precompile_()</code> and any other code that includes a <code>_precompile_()</code> function. In the new version, SnoopCompile automatically creates the appropriate code.</p></div></div></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="reference/">Syntax Reference »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 14 August 2020 06:59">Friday 14 August 2020</span>. Using Julia version 1.6.0-DEV.635.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
