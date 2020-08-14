@@ -106,18 +106,30 @@ jobs:
       - name: Upload all
         uses: actions/upload-artifact@v2
         with:
-          path: ./
+          path: ${{ matrix.test_package }}
 
   Create_PR:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     needs: MultiVersion
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_package:
+          - ./test/TestPackage3.jl
     steps:
       - uses: actions/checkout@v2
       - name: Download all
         uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: ${{ matrix.test_package }}/artifact
+      - run: |
+          julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: SnoopCompileBot postprocess
-        run: julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.postprocess();'
+        run: |
+          julia --code-coverage=user -e 'using SnoopCompileBot; SnoopCompileBot.postprocess();'
+        working-directory: ${{ matrix.test_package }}
       - uses: julia-actions/julia-uploadcodecov@latest
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
