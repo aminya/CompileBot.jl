@@ -15,6 +15,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
 FilePathsBase = "0.9"
+GitHubActions = "0.1"
 SnoopCompile = "2"
 SnoopCompileCore = "2"
 YAML = "0.4"
