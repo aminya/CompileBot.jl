@@ -179,4 +179,11 @@ include("snoop_bench.jl")
 include("deprecations.jl")
 
 
+# Using GitHubActions logger in CI
+using Logging: global_logger
+using GitHubActions: GitHubActionsLogger
+function __init__()
+    get(ENV, "GITHUB_ACTIONS", "false") == "true" && global_logger(GitHubActionsLogger())
+end
+
 end # module
