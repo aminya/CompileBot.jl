@@ -17,7 +17,7 @@ function postprocess()
     # run(`(git diff -w --no-color || git apply --cached --ignore-whitespace && git checkout -- . && git reset && git add -p) || echo done`)
 
     # Format precompile_includer.jl
-    format_file("./src/precompile_includer.jl")
+    format_file(joinpath(pwd(), "src/precompile_includer.jl"))
 
     # TODO
     # - name: Create Pull Request
