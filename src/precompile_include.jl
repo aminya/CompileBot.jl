@@ -220,7 +220,7 @@ function add_includer(package_name::AbstractString, package_path::AbstractString
         # assumes that the last `end` is the end of a module
         endline = length(package_lines)
         for iLine = endline:-1:1
-            if any(occursin.(["end # module", "end"], Ref(package_lines[iLine])))
+            if any(occursin.([r"end(\s)*#(\s)*module", "end"], Ref(package_lines[iLine])))
                 endline = iLine
                 break
             end
@@ -245,5 +245,46 @@ function add_includer(package_name::AbstractString, package_path::AbstractString
                 end
             end
         end
+
+        if !occursin("include(\"precompile_includer.jl\")", Base.read(package_path, String))
+            # TODO should we error here?
+            @warn """SnoopCompileBot failed to add `"include(\"precompile_includer.jl\")"` to $package_path. You should do that manually!"""
+        end
     end
+
+    write_gitattributes(package_path)
+
+end
+
+"""
+    write_gitattributes(package_path)
+Add gitattributes to prevent line ending issues
+"""
+function write_gitattributes(package_path)
+    gitattributes = """
+    # Set default behaviour to automatically normalize line endings.
+    * text=auto
+
+    # Force bash scripts to always use lf line endings so that if a repo is accessed
+    # in Unix via a file share from Windows, the scripts will work.
+    *.sh text eol=lf
+    """
+    package_root_path = dirname(dirname(package_path))
+    gitattributes_path = "$package_root_path/.gitattributes"
+    if !isfile(gitattributes_path)
+        Base.write(gitattributes_path, gitattributes)
+    else
+        if !occursin("text=auto", Base.read(gitattributes_path, String))
+            gitattributes_lines = Base.open(gitattributes_path) do io
+                Base.readlines(io, keep=true)
+            end
+            append!(gitattributes_lines, gitattributes) # add new empty line before the end
+            open(gitattributes_path, "w") do io
+                for l in gitattributes_lines
+                    Base.write(io, l)
+                end
+            end
+        end
+    end
+
 end

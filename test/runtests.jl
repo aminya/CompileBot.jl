@@ -332,6 +332,9 @@ bottestdir = GoodPath(@__DIR__)
 
         @test isfile("$(package_rootpath[1])/deps/SnoopCompile/precompile/precompile_TestPackage1.jl")
 
+        @test isfile("$(package_rootpath[1])/.gitattributes")
+        rm("$(package_rootpath[1])/.gitattributes", force=true)
+
         precompile_text = Base.read("$(package_rootpath[1])/deps/SnoopCompile/precompile/precompile_TestPackage1.jl", String)
 
         @test occursin("hello", precompile_text)
@@ -346,6 +349,9 @@ bottestdir = GoodPath(@__DIR__)
         os, osfun = SnoopCompileBot.detectOS()
 
         include("$(package_rootpath[2])/deps/SnoopCompile/snoop_bot.jl")
+
+        @test isfile("$(package_rootpath[2])/.gitattributes")
+        rm("$(package_rootpath[2])/.gitattributes", force=true)
 
         @test isfile("$(package_rootpath[2])/deps/SnoopCompile/precompile/$os/precompile_TestPackage2.jl")
 
@@ -368,6 +374,9 @@ bottestdir = GoodPath(@__DIR__)
         os, osfun = SnoopCompileBot.detectOS()
 
         include("$(package_rootpath[3])/deps/SnoopCompile/snoop_bot.jl")
+
+        @test isfile("$(package_rootpath[3])/.gitattributes")
+        rm("$(package_rootpath[3])/.gitattributes", force=true)
 
         @test isfile("$(package_rootpath[3])/deps/SnoopCompile/precompile/$(SnoopCompileBot.VersionFloat(VERSION))/precompile_TestPackage3.jl")
 

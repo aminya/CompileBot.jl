@@ -140,9 +140,25 @@ function BotConfig(
         append!(exclusions, blacklist)
     end
 
+    package_root_path = dirname(dirname(package_path))
+
+    # Error for workflow file
+    yml_path_error = "SnoopCompile.yml"
+    try
+        yml_path_error = searchdirsboth([ pwd(), package_root_path, "$package_root_path/.github/workflows/"], yml_path_error)
+    catch
+        # file not found
+    finally
+        if isfile(yml_path_error) && !occursin("SnoopCompileBot.postprocess()", Base.read(yml_path_error, String))
+            error("""Please update the `SnoopCompile.yml` based on the new API: 
+            https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1
+            """)
+        end
+    end
+
+
     # Parse os and version from the yaml file
     if !isnothing(yml_path)
-        package_root_path = dirname(dirname(package_path))
         yml_path = searchdirsboth([ pwd(), package_root_path, "$package_root_path/.github/workflows/"], yml_path)
         if !isfile(yml_path)
             error("$yml_path not found")
@@ -177,6 +193,14 @@ include("precompile_activation.jl")
 include("snoop_bot.jl")
 include("snoop_bench.jl")
 include("deprecations.jl")
+include("postprocess.jl")
 
+
+# Using GitHubActions logger in CI
+using Logging: global_logger
+using GitHubActions: GitHubActionsLogger
+function __init__()
+    get(ENV, "GITHUB_ACTIONS", "false") == "true" && global_logger(GitHubActionsLogger())
+end
 
 end # module
