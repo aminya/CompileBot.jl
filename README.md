@@ -4,7 +4,6 @@ SnoopCompileBot automatically generates precompilation data for your Julia packa
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://aminya.github.io/SnoopCompileBot.jl/dev)
 ![Build Status (Github Actions)](https://github.com/aminya/SnoopCompileBot.jl/workflows/CI/badge.svg)
-[![Test Coverage](https://codecov.io/gh/aminya/SnoopCompileBot.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/aminya/SnoopCompileBot.jl)
 
 # Installation and Usage
 ```julia
@@ -17,3 +16,5 @@ using SnoopCompileBot
 
 # Documentation
 Click on the badge: [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://aminya.github.io/SnoopCompileBot.jl/dev)
+
+**Notice**: SnoopCompileBot is now in a separate repository, and the GitHubActions API is changed because of that. Update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
