@@ -114,7 +114,7 @@ name: SnoopCompile
 on:
   push:
     branches:
-    #  - 'master'  # NOTE: to run the bot only on pushes to master
+    #  - 'master'  # NOTE: uncomment to run the bot only on pushes to master
 
 defaults:
   run:
@@ -126,6 +126,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+
       matrix:
         version:   # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
           - '1.4.2'
@@ -136,19 +137,24 @@ jobs:
           - macos-latest
         arch:
           - x64
+
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.version }}
+
       - name: Install dependencies
         run: |
           julia --project -e 'using Pkg; Pkg.instantiate();'
           julia -e 'using Pkg; Pkg.add(["SnoopCompileCore", "SnoopCompile", "SnoopCompileBot"]); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();'
+
       - name: Generating precompile files
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: must match path
+
       - name: Running Benchmark
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bench.jl")' # NOTE: optional, if have benchmark file
+
       - name: Upload all
         uses: actions/upload-artifact@v2
         with:
@@ -162,15 +168,15 @@ jobs:
       - uses: actions/checkout@v2
       - name: Download all
         uses: actions/download-artifact@v2
+
       - name: SnoopCompileBot postprocess
         run: julia -e 'using Pkg; Pkg.add("SnoopCompileBot"); using SnoopCompileBot; SnoopCompileBot.postprocess();'
+
       - name: Create Pull Request
-        # https://github.com/marketplace/actions/create-pull-request
-        uses: peter-evans/create-pull-request@v2
+        uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update precompile_*.jl file
-          committer: YOUR NAME <yourEmail@something.com> # NOTE: change `committer` to your name and your email.
           title: "[AUTO] Update precompiles"
           labels: SnoopCompile
           branch: "SnoopCompile_AutoPR"
