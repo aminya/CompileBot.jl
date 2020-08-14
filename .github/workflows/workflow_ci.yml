@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Add SnoopCompileBot and friends
         run: |
-          julia --code-coverage=user -e 'using Pkg; Pkg.develop([PackageSpec("SnoopCompileCore"), PackageSpec("SnoopCompile"), PackageSpec(; path=pwd()) ]);'
+          julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: Install dependencies
         working-directory: ${{ matrix.test_package }}
         run: |
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Add SnoopCompileBot and friends
         run: |
-          julia --code-coverage=user -e 'using Pkg; Pkg.develop([PackageSpec("SnoopCompileCore"), PackageSpec("SnoopCompile"), PackageSpec(; path=pwd()) ]);'
+          julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: Install dependencies
         working-directory: ${{ matrix.test_package }}
         run: |
@@ -88,7 +88,7 @@ jobs:
           version: ${{ matrix.version }}
       - name: Add SnoopCompileBot and friends
         run: |
-          julia --code-coverage=user -e 'using Pkg; Pkg.develop([PackageSpec("SnoopCompileCore"), PackageSpec("SnoopCompile"), PackageSpec(; path=pwd()) ]);'
+          julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: Install dependencies
         working-directory: ${{ matrix.test_package }}
         run: |
