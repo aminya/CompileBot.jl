@@ -127,10 +127,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version:   # NOTE: if not using `yml_path`, the versions below should match those in your botconfig
+        version:   # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
           - '1.4.2'
           - '1.3.1'
-        os:        # NOTE: if not using `yml_path`, should match the os setting of your botconfig
+        os:        # NOTE: if not using `yml_path`, these should match the os in `BotConfig`
           - ubuntu-latest
           - windows-latest
           - macos-latest
