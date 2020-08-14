@@ -17,4 +17,11 @@ jobs:
         with:
           SNOOP_VERSION: '2'
 
-      - run: julia -e "using Pkg; Pkg.add(PackageSpec("SnoopCompile", version = "${SNOOP_VERSION}"))"
+      - run: julia -e "using Pkg; Pkg.add(PackageSpec(\"SnoopCompile\", version = \"${SNOOP_VERSION}\"))"
+
+  test2:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+      - run: julia -e "using Pkg; Pkg.add(PackageSpec(\"SnoopCompile\", version = \"${SNOOP_VERSION}\"))"
