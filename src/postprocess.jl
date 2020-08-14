@@ -6,12 +6,16 @@ function postprocess()
     # TODO rewrite using Julia functions
 
     # Move the content of the directory to the root
-    run(`rsync -a artifact/\* ./`)
-    run(`rm -d -r artifact`)
+    artifact_path =joinpath(pwd(), "artifact")
+    run(`rsync -a $artifact_path/\* ./`)
+    run(`rm -d -r $artifact_path`)
 
     # Discard unrelated changes
-    run(`test -f 'Project.toml' \&\& git checkout -- 'Project.toml'`)
-    run(`git ls-files 'Manifest.toml' \| grep . \&\& git checkout -- 'Manifest.toml'`)
+    Projecttoml_path =joinpath(pwd(), "Project.toml")
+    run(`test -f $Projecttoml_path \&\& git checkout -- $Projecttoml_path`)
+
+    Manifesttoml_path =joinpath(pwd(), "Manifest.toml")
+    run(`git ls-files  $Manifesttoml_path \| grep . \&\& git checkout --  $Manifesttoml_path`)
 
     # BUG causes issues
     # run(`(git diff -w --no-color || git apply --cached --ignore-whitespace && git checkout -- . && git reset && git add -p) || echo done`)
