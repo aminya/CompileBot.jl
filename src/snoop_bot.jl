@@ -114,7 +114,7 @@ function _snoop_bot_expr(config::BotConfig, snoop_script, test_modul::Module; sn
 
     snooping_analysis_code = "$snooping_code; $analysis_code;"
 
-    if isdefined(Main, :SnoopCompile_coverage_ENV) && in(SnoopCompile_coverage_ENV, [true, "true"])
+    if in(get(ENV, "SnoopCompile_coverage_ENV", false), [true, "true"])
         code_coverage = "user"
     else
         code_coverage = "none"
