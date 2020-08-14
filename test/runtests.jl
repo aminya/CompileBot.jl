@@ -320,7 +320,7 @@ bottestdir = GoodPath(@__DIR__)
 
     using Pkg
     package_rootpath = String[]
-    for (i, package_name) in enumerate(["TestPackage1", "TestPackage2", "TestPackage3", "TestPackage5"])
+    for (i, package_name) in enumerate(["TestPackage1", "TestPackage2", "TestPackage3", "TestPackage0", "TestPackage5"])
         Pkg.develop(PackageSpec(path=joinpath(bottestdir,"$package_name.jl")))
         push!(package_rootpath, goodjoinpath(bottestdir,"$package_name.jl"))
     end
@@ -396,8 +396,28 @@ bottestdir = GoodPath(@__DIR__)
         @warn "else version is set to 1.2, so we should not run the benchmark test on nightly, when we have not generated such files yet (unlike in the realworld tests)."
     end
 
-    @testset "yaml os and version parse" begin
+
+    @testset "Nothing is generated" begin
+
         include("$(package_rootpath[4])/deps/SnoopCompile/snoop_bot.jl")
+
+        @test isfile("$(package_rootpath[4])/deps/SnoopCompile/precompile/precompile_TestPackage0.jl")
+
+        precompile_text = Base.read("$(package_rootpath[4])/deps/SnoopCompile/precompile/precompile_TestPackage0.jl", String)
+
+        @test occursin(stripall("""
+        function _precompile_()
+            # nothing
+        end
+        """), stripall(precompile_text))
+    end
+
+    @testset "Nothing is generated" begin
+        include("$(package_rootpath[4])/deps/SnoopCompile/snoop_bench.jl")
+    end
+
+    @testset "yaml os and version parse" begin
+        include("$(package_rootpath[5])/deps/SnoopCompile/snoop_bot.jl")
         for bc in bcs
             @test [v"1.4.2", v"1.3.1"] == bc.version
             @test ["ubuntu-latest", "windows-latest", "macos-latest"] == bc.os
@@ -405,7 +425,7 @@ bottestdir = GoodPath(@__DIR__)
     end
 
     # Clean Test remainder
-    for (i, package_name) in enumerate(["TestPackage1", "TestPackage2", "TestPackage3", "TestPackage5"])
+    for (i, package_name) in enumerate(["TestPackage1", "TestPackage2", "TestPackage3", "TestPackage0", "TestPackage5"])
         Pkg.rm(package_name)
         main_file= goodjoinpath(package_rootpath[i], "src/$package_name.jl")
         run(`git checkout -- $main_file`)
