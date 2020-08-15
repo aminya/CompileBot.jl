@@ -111,9 +111,6 @@ need to adjust the configuration.
 ```yaml
 name: SnoopCompile
 
-env:
-  SnoopCompileBot_version: 2
-
 on:
   push:
     branches:
@@ -150,7 +147,7 @@ jobs:
       - name: Install dependencies
         run: |
           julia --project -e 'using Pkg; Pkg.instantiate();'
-          julia -e 'using Pkg; Pkg.add( PackageSpec("SnoopCompileBot", version = "{{ env.SnoopCompileBot_version }}") ); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();'
+          julia -e 'using Pkg; Pkg.add(PackageSpec(name="SnoopCompileBot", version = "2")); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();'
 
       - name: Generating precompile files
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: must match path
@@ -173,7 +170,7 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: SnoopCompileBot postprocess
-        run: julia -e 'using Pkg; Pkg.add("SnoopCompileBot"); using SnoopCompileBot; SnoopCompileBot.postprocess();'
+        run: julia -e 'using Pkg; Pkg.add(PackageSpec(name="SnoopCompileBot", version = "2")); using SnoopCompileBot; SnoopCompileBot.postprocess();'
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
