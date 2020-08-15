@@ -1,7 +1,7 @@
 name = "SnoopCompileBot"
 uuid = "1d5e0e55-7d74-4714-b8d8-efa80e938cf7"
 author = ["Amin Yahyaabadi <aminyahyaabadi74@gmail.com>"]
-version = "1.7.2"
+version = "2.0.0"
 
 [deps]
 FilePathsBase = "48062228-2e41-5def-b9a4-89aafe57970f"
