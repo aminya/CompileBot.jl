@@ -6,14 +6,16 @@ function postprocess()
     # TODO rewrite using Julia functions
 
     # Move the content of the directory to the root
-    artifact_path =joinpath(pwd(), "artifact")
+    artifact_path = joinpath(pwd(), "artifact")
     run(`rsync -a $artifact_path/ ./`)
     run(`rm -d -r $artifact_path`)
 
     # Discard unrelated changes
-    Projecttoml_path =joinpath(pwd(), "Project.toml")
-    if isfile(Projecttoml_path)
-      run(`git checkout -- $Projecttoml_path`)
+
+    # discard Project.toml changes
+    if isfile("Project.toml")
+      run(`git checkout -- "Project.toml"`)
+    end
 
     # Discard Manifest.toml changes
     if !isempty(readchomp(`git ls-files Manifest.toml`))
