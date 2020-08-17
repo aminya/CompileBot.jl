@@ -8,7 +8,7 @@ function postprocess()
     # Move the content of the directory to the root
     artifact_path = joinpath(pwd(), "artifact")
     run(`rsync -a $artifact_path/ ./`)
-    run(`rm -d -r $artifact_path`)
+    rm(artifact_path, recursive=true)
 
     # Discard unrelated changes
     git_checkout_all(["precompile_includer.jl", r"precompile/.*precompile_.*\.jl"], pwd())
