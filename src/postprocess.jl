@@ -11,22 +11,7 @@ function postprocess()
     run(`rm -d -r $artifact_path`)
 
     # Discard unrelated changes
-
-    # discard Project.toml changes
-    if isfile("Project.toml")
-      run(`git checkout -- "Project.toml"`)
-    end
-
-    # Discard Manifest.toml changes
-    if !isempty(readchomp(`git ls-files Manifest.toml`))
-        run(`git checkout -- Manifest.toml`)
-    end
-
-    # Discard .github/workflows changes (workflow files require special permissions for changing)
-    run(`git checkout -- ".github/workflows"`)
-
-    # BUG causes issues
-    # run(`(git diff -w --no-color || git apply --cached --ignore-whitespace && git checkout -- . && git reset && git add -p) || echo done`)
+    git_checkout_all(["precompile_includer.jl", r"precompile/.*precompile_.*\.jl"], pwd())
 
     # Format precompile_includer.jl
     format_file(joinpath(pwd(), "src/precompile_includer.jl"))
@@ -45,4 +30,27 @@ function postprocess()
 
   end
 
+end
+
+using FilePathsBase
+"""
+  git_checkout_all( ignore_list::Vector, rootpath::AbstractString = pwd()) # <UString
+
+Discard unrelated changes
+
+# Examples
+```julia
+git_checkout_all(["precompile_includer.jl", r"precompile/.*precompile_.*\\.jl"], pwd())
+```
+"""
+function git_checkout_all( ignore_list::Vector, rootpath::AbstractString = pwd()) # <UString
+  push!(ignore_list, ".git/")
+  for file in walkpath(Path(rootpath))
+    filepath = GoodPath(string(file))
+    if !any(occursin.( ignore_list,  Ref(filepath) ))
+      if !isempty(readchomp(`git ls-files $filepath`))
+        run(`git checkout -- $filepath`)
+      end
+    end
+  end
 end
