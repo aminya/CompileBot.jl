@@ -14,11 +14,12 @@ function postprocess()
     Projecttoml_path =joinpath(pwd(), "Project.toml")
     if isfile(Projecttoml_path)
       run(`git checkout -- $Projecttoml_path`)
+
+    # Discard Manifest.toml changes
+    if !isempty(readchomp(`git ls-files Manifest.toml`))
+        run(`git checkout -- Manifest.toml`)
     end
 
-    # Julia doesn't support &&
-    # Manifesttoml_path =joinpath(pwd(), "Manifest.toml")
-    # run(`git ls-files  $Manifesttoml_path \| grep . \&\& git checkout --  $Manifesttoml_path`)
 
     # BUG causes issues
     # run(`(git diff -w --no-color || git apply --cached --ignore-whitespace && git checkout -- . && git reset && git add -p) || echo done`)
