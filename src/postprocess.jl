@@ -11,7 +11,7 @@ function postprocess()
     rm(artifact_path, recursive=true)
 
     # Discard unrelated changes
-    git_checkout_all(["precompile_includer.jl", r"precompile/.*precompile_.*\.jl"], pwd())
+    git_checkout_all(["src/precompile_includer.jl", r"precompile/.*precompile_.*\.jl"], pwd())
 
     # Format precompile_includer.jl
     format_file(joinpath(pwd(), "src/precompile_includer.jl"))
@@ -40,7 +40,7 @@ Discard unrelated changes
 
 # Examples
 ```julia
-git_checkout_all(["precompile_includer.jl", r"precompile/.*precompile_.*\\.jl"], pwd())
+git_checkout_all(["src/precompile_includer.jl", r"precompile/.*precompile_.*\\.jl"], pwd())
 ```
 """
 function git_checkout_all( ignore_list::Vector, rootpath::AbstractString = pwd()) # <UString
