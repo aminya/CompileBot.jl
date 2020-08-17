@@ -47,7 +47,7 @@ function git_checkout_all( ignore_list::Vector, rootpath::AbstractString = pwd()
   push!(ignore_list, ".git/")
   for file in walkpath(Path(rootpath))
     filepath = GoodPath(string(file))
-    if !any(occursin.( ignore_list,  Ref(filepath) ))
+    if isfile(filepath) && !any(occursin.( ignore_list,  Ref(filepath) ))
       if !isempty(readchomp(`git ls-files $filepath`))
         run(`git checkout -- $filepath`)
       end
