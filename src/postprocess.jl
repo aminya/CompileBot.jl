@@ -20,6 +20,8 @@ function postprocess()
         run(`git checkout -- Manifest.toml`)
     end
 
+    # Discard .github/workflows changes (workflow files require special permissions for changing)
+    run(`git checkout -- ".github/workflows"`)
 
     # BUG causes issues
     # run(`(git diff -w --no-color || git apply --cached --ignore-whitespace && git checkout -- . && git reset && git add -p) || echo done`)
