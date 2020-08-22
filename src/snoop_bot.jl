@@ -124,7 +124,6 @@ function _snoop_bot_expr(config::BotConfig, snoop_script, test_modul::Module; sn
 
     addpkg_ifnotfound(:SnoopCompileCore, test_modul)
     addpkg_ifnotfound(:SnoopCompile, test_modul)
-    devpkg_ifnotfound(:SnoopCopmileBot, "$(dirname(@__DIR__))", test_modul)
     out = quote
         ################################################################
         using SnoopCompileBot
