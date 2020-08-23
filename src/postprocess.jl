@@ -7,7 +7,7 @@ function postprocess()
 
     # Move the content of the directory to the root
     artifact_path = joinpath(pwd(), "artifact")
-    run(`rsync -a $artifact_path/ ./`)
+    replace_files(artifact_path, "./", [".git/"])
     rm(artifact_path, recursive=true)
 
     # Discard unrelated changes
@@ -30,6 +30,25 @@ function postprocess()
 
   end
 
+end
+
+"""
+  replace_files(path::AbstractString, dst::AbstractString, ignore_list::Vector = String[])
+
+Moves all files and folders replacing the destination files
+"""
+function replace_files(src::AbstractString, dst::AbstractString, ignore_list::Vector = String[])
+  files = readdir(src)
+  filespaths = GoodPath.(joinpath.(Ref(src), files))
+  for (file, filepath) in zip(filespaths, files)
+    if !any(occursin.( ignore_list,  Ref(filepath) ))
+      if isdir(filepath) && isdir(joinpath(dst, file))
+        mv(filepath, joinpath(dst, file), force=true)
+      else
+        mv(filepath, dst, force=true)
+      end
+    end
+  end
 end
 
 using FilePathsBase
