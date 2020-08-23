@@ -7,6 +7,12 @@ function postprocess()
 
     # Move the content of the directory to the root
     artifact_path = joinpath(pwd(), "artifact")
+    # remove .git folder
+    gitdir = joinpath(artifact_path, ".git")
+    if isdir(gitdir)
+      rm(gitdir, recursive=true)
+    end
+    # move and clean
     run(`rsync -a $artifact_path/ ./`)
     rm(artifact_path, recursive=true)
 
