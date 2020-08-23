@@ -49,12 +49,15 @@ Discard unrelated changes
 git_checkout_all(["src/precompile_includer.jl", r"precompile/.*precompile_.*\\.jl"], pwd())
 ```
 """
-function git_checkout_all( ignore_list::Vector, rootpath::AbstractString = pwd()) # <UString
+function git_checkout_all( ignore_list::Vector, rootpath::AbstractString = pwd(), debug=true) # <UString
   push!(ignore_list, ".git/")
   for file in walkpath(Path(rootpath))
     filepath = GoodPath(string(file))
     if isfile(filepath) && !any(occursin.( ignore_list,  Ref(filepath) ))
       if !isempty(readchomp(`git ls-files $filepath`))
+        if debug
+          println("running git checkout -- $filepath")
+        end
         run(`git checkout -- $filepath`)
       end
     end
