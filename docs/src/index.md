@@ -1,204 +1,60 @@
-# SnoopCompileBot.jl
+# SnoopCompile.jl
 
-SnoopCompileBot automatically generates precompilation data for your Julia packages, which results in reducing the time it takes for runtime compilation, loading, and startup.
+SnoopCompile "snoops" on the Julia compiler, causing it to record the
+functions and argument types it's compiling.  From these lists of methods,
+you can generate lists of `precompile` directives that may reduce the latency between
+loading packages and using them to do "real work."
 
-# Installation
-```julia
-using Pkg
-Pkg.add("SnoopCompileBot")
-```
-```julia
-using SnoopCompileBot
-```
+SnoopCompile can also detect and analyze *method cache invalidations*,
+which occur when new method definitions alter dispatch in a way that forces Julia to discard previously-compiled code.
+Any later usage of invalidated methods requires recompilation.
+Invalidation can trigger a domino effect, in which all users of invalidated code also become invalidated, propagating all the way back to the top-level call.
+When a source of invalidation can be identified and either eliminated or mitigated,
+you can reduce the amount of work that the compiler needs to repeat and take better advantage of precompilation.
 
+## Background
 
-### Usage
+Julia uses
+[Just-in-time (JIT) compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation) to
+generate the code that runs on your CPU.
+Broadly speaking, there are two major steps: *inference* and *code generation*.
+Inference is the process of determining the type of each object, which in turn
+determines which specific methods get called; once type inference is complete,
+code generation performs optimizations and ultimately generates the assembly
+language (native code) used on CPUs.
+Some aspects of this process are documented [here](https://docs.julialang.org/en/latest/devdocs/eval).
 
-As you change the code in your package, the precompile statements likely need to be updated too.
-You can use SnoopCompile bot to automatically and continuously create precompile files.
-This bot can be used offline or online.
+Every time you load a package in a fresh Julia session, the methods you use
+need to be JIT-compiled, and this contributes to the latency of using the package.
+In some circumstances, you can save some of the work to reduce the burden next time.
+This is called *precompilation*.
+Unfortunately, precompilation is not as comprehensive as one might hope.
+Currently, Julia is only capable of saving inference results (not native code) in the
+`*.ji` files that are the result of precompilation.
+Moreover, there are some significant constraints that sometimes prevent Julia from
+saving even the inference results;
+and finally, what does get saved can sometimes be invalidated if later packages
+provide more specific methods that supersede some of the calls in the precompiled methods.
 
-Follow these steps to set up SnoopCompile bot for your package.
+Despite these limitations, there are cases where precompilation can substantially reduce
+latency.
+SnoopCompile is designed to try to make it easy to try precompilation to see whether
+it produces measurable benefits.
 
-## 1 - Setting up the SnoopCompile bot configuration folder
+## Who should use this package
 
-Here, we will configure the bot in a directory `deps/SnoopCompile/` that should be added to your repository.
-All configuration files for the SnoopCompile bot should go in this directory.
-If you choose a different name for this directory, be sure to change the path in the configuration steps below.
+SnoopCompile is intended primarily for package *developers* who want to improve the
+experience for their users.
+Because the results of SnoopCompile are typically stored in the `*.ji` precompile files,
+anyone can take advantage of the reduced latency.
 
-## 2 - Create the precompile script
+[PackageCompiler](https://github.com/JuliaLang/PackageCompiler.jl) is an alternative
+that *non-developer users* may want to consider for their own workflow.
+It performs more thorough precompilation than the "standard" usage of SnoopCompile,
+although one can achieve a similar effect by creating [`userimg.jl` files](@ref userimg).
+However, the cost is vastly increased build times, which for package developers is
+unlikely to be productive.
 
-You will need a [precompile script](@ref pcscripts), here called `example_script.jl`, that "exercises" the functionality you'd like to precompile.
-If you write a dedicated precompile script, place it in the bot configuration folder.
-
-Alternatively, you may use your package's `"runtests.jl"` file.
-While less precise about which functionality is worthy of precompilation,
-this can slightly simplify configuration as described below.
-
-## 3 - Create the script that runs `snoop_bot`
-
-The `snoop_bot` function generates precompile statements and writes them to
-a file that will be incorporated into your package.
-`snoop_bot` requires a few settings, which can be most easily generated by [`BotConfig`](@ref).
-The script that runs `snoop_bot` should be saved in your configuration directory,
-with a name like `snoop_bot.jl`.
-
-The example below (from [here](https://github.com/aminya/Zygote.jl/blob/SnoopCompile/deps/SnoopCompile/snoop_bot.jl)) supports multiple operating systems, multiple Julia versions, and excludes a function whose precompilation would be problematic:
-
-```julia
-using SnoopCompileBot
-
-botconfig = BotConfig(
-  "Zygote";                            # package name (the one this configuration lives in)
-  yml_path = "SnoopCompile.yml"        # parse `os` and `version` from `SnoopCompile.yml`
-  exclusions = ["SqEuclidean"],        # exclude functions (by name) that would be problematic if precompiled
-)
-
-snoop_bot(
-  botconfig,
-  "$(@__DIR__)/example_script.jl",
-)
-```
-
-If you choose to use your "runtests.jl" file as your precompile script, configuration can be as simple as specifying just the name of the package:
-
-```julia
-using SnoopCompileBot
-
-snoop_bot(BotConfig("MyPackage"))
-```
-
-!!! note
-    Some of your regular tests may not be appropriate for `snoop_bot`.
-    `snoop_bot` sets a global variable `SnoopCompile_ENV` to `true` during snooping,
-    and sets it to `false` when finished.
-    You can exploit this in your tests to determine whether snooping is on:
-
-    ```julia
-    if !isdefined(Main, :SnoopCompile_ENV) || SnoopCompile_ENV == false
-        # Tests that you want to skip when snooping
-    end
-    ```
-
-Finally, you could use package loading as the only operation,
-with `snoop_bot(config, :(using MyPackage))`.
-
-`snoop_bot` uses different strategies depending on the Julia version:
-
-- On Julia 1.2 or higher, it identifies methods for precompilation based on [`@snoopi`](@ref macro-snoopi);
-- On Julia 1.0 or 1.1 (which do not support `@snoopi`), it identifies methods for precompilation based on [`@snoopc`](@ref macro-snoopc).
-
-You can override this default behavior with a keyword argument, see [`snoop_bot`](@ref) for details.
-
-## 4 - Optionally test the impact of your precompiles with `snoop_bench`
-
-Call [`snoop_bench`](@ref) to measure the effect of adding precompile files.
-It takes the same parameters as `snoop_bot` above.
-You can run this manually, or choose to run it during automatic precompile file generation.
-To perform it automatically, create a `snoop_bench.jl` script in the bot configuration directory.
-This should be nearly identical to your `snoop_bot.jl` file, but calling `snoop_bench`
-instead.
-Note that benchmarking has the option of different performance metrics,
-`snoop_mode=:snoopi` or `snoop_mode=:run_time` depending on whether you want to measure inference time or the run time of your precompile script.
-
-## 5 - Configure the bot to run with a GitHub Action file
-
-You can create the precompile files automatically when you merge pull requests to `master` by adding a workflow file under `.github/workflows/SnoopCompile.yml`.
-This file should have content such as the example below.
-Lines marked with `NOTE` deserve special attention as likely places you may
-need to adjust the configuration.
-
-```yaml
-name: SnoopCompile
-
-on:
-  push:
-    branches:
-    #  - 'master'  # NOTE: uncomment to run the bot only on pushes to master
-
-defaults:
-  run:
-    shell: bash
-
-jobs:
-  SnoopCompile:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-
-      matrix:
-        version:   # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
-          - '1.5.0'
-          - '1.3.1'
-        os:        # NOTE: if not using `yml_path`, these should match the os in `BotConfig`
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
-        arch:
-          - x64
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@latest
-        with:
-          version: ${{ matrix.version }}
-
-      - name: Install dependencies
-        run: |
-          julia --project -e 'using Pkg; Pkg.instantiate();'
-          julia -e 'using Pkg; Pkg.add(PackageSpec(name="SnoopCompileBot", version = "2")); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();'
-
-      - name: Generating precompile files
-        run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: must match path
-
-      - name: Running Benchmark
-        run: julia --project -e 'include("deps/SnoopCompile/snoop_bench.jl")' # NOTE: optional, if have benchmark file
-
-      - name: Upload all
-        uses: actions/upload-artifact@v2
-        with:
-          path: ./
-
-  Create_PR:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    needs: SnoopCompile
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download all
-        uses: actions/download-artifact@v2
-
-      - name: SnoopCompileBot postprocess
-        run: julia -e 'using Pkg; Pkg.add(PackageSpec(name="SnoopCompileBot", version = "2")); using SnoopCompileBot; SnoopCompileBot.postprocess();'
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Update precompile_*.jl file
-          title: "[AUTO] Update precompiles"
-          labels: SnoopCompile
-          branch: "SnoopCompile_AutoPR"
-
-
-  Skip:
-    if: "contains(github.event.head_commit.message, '[skip ci]')"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip CI 🚫
-        run: echo skip ci
-```
-
-You can learn more about these files and the workflow process in the [documentation](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow).
-Examples of such files in projects can be found in other packages, for example
-[Zygote](https://github.com/aminya/Zygote.jl/blob/SnoopCompile/.github/workflows/SnoopCompile.yml).
-
-
-!!! note
-
-    Upgrading from an old SnoopCompile bot:
-
-    SnoopCompileBot is now in a separate repository, and the API is changed because of that. Call `using SnoopCompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
-
-    In addition to the previous steps, you should also remove `_precompile_()` and any other code that includes a `_precompile_()` function. In the new version, SnoopCompile automatically creates the appropriate code.
+Finally, another alternative that reduces latency without any modifications
+to package files is [Revise](https://github.com/timholy/Revise.jl).
+It can be used in conjunction with SnoopCompile.

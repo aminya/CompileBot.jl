@@ -1,23 +1,15 @@
 using Documenter
-using SnoopCompileBot
+using SnoopCompile
 
 makedocs(
-    modules=[SnoopCompileBot],
-    authors="Amin Yahyaabadi",
-    repo="https://github.com/aminya/SnoopCompileBot.jl/blob/{commit}{path}#L{line}",
-    sitename="SnoopCompileBot.jl",
-    format=Documenter.HTML(;
-        prettyurls = prettyurls = get(ENV, "CI", nothing) == "true",
-        # canonical="https://aminya.github.io/SnoopCompileBot.jl",
-        # assets=String[],
+    sitename = "SnoopCompile",
+    format = Documenter.HTML(
+        prettyurls = get(ENV, "CI", nothing) == "true"
     ),
-    pages=[
-        "Home" => "index.md",
-        "Syntax Reference" => "reference.md"
-    ],
+    modules = [SnoopCompile],
+    pages = ["index.md", "snoopi.md", "snoopc.md", "userimg.md", "bot.md", "snoopr.md", "reference.md"]
 )
 
 deploydocs(
-    repo = "github.com/aminya/SnoopCompileBot.jl.git",
-    push_preview=true
+    repo = "github.com/timholy/SnoopCompile.jl.git"
 )
