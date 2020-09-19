@@ -20,3 +20,7 @@ using SnoopCompileBot
 Click on the badge: [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://aminya.github.io/SnoopCompileBot.jl/dev)
 
 **Notice**: SnoopCompileBot is now in a separate repository, and the API is changed because of that. Call `using SnoopCompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
+
+
+# Projects using SnoopCompileBot:
+- [Plots](https://github.com/JuliaPlots/Plots.jl)
