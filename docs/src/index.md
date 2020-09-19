@@ -129,7 +129,7 @@ jobs:
 
       matrix:
         version:   # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
-          - '1.5.0'
+          - '1.5.2'
           - '1.3.1'
         os:        # NOTE: if not using `yml_path`, these should match the os in `BotConfig`
           - ubuntu-latest
@@ -147,10 +147,12 @@ jobs:
       - name: Install dependencies
         run: |
           julia --project -e 'using Pkg; Pkg.instantiate();'
-          julia -e 'using Pkg; Pkg.add(PackageSpec(name="SnoopCompileBot", version = "2")); Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();'
+          julia -e 'using Pkg; Pkg.add( PackageSpec(name="SnoopCompileBot", version = "2") );
+                    Pkg.develop(PackageSpec(; path=pwd()));
+                    using SnoopCompileBot; SnoopCompileBot.addtestdep();'
 
       - name: Generating precompile files
-        run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: must match path
+        run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: notice the path
 
       - name: Running Benchmark
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bench.jl")' # NOTE: optional, if have benchmark file
@@ -170,7 +172,8 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: SnoopCompileBot postprocess
-        run: julia -e 'using Pkg; Pkg.add(PackageSpec(name="SnoopCompileBot", version = "2")); using SnoopCompileBot; SnoopCompileBot.postprocess();'
+        run: julia -e 'using Pkg; Pkg.add( PackageSpec(name="SnoopCompileBot", version = "2") );
+                       using SnoopCompileBot; SnoopCompileBot.postprocess();'
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
