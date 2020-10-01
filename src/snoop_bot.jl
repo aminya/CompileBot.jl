@@ -126,20 +126,20 @@ function _snoop_bot_expr(config::BotConfig, snoop_script, test_modul::Module; sn
     addpkg_ifnotfound(:SnoopCompile, test_modul)
     out = quote
         ################################################################
-        using SnoopCompileBot
+        using CompileBot
 
         # Environment variable to detect SnoopCompile bot
         global SnoopCompile_ENV = true
 
         ################################################################
-        SnoopCompileBot.precompile_deactivator($package_path);
+        CompileBot.precompile_deactivator($package_path);
         ################################################################
 
         ### Log the compiles and analyze the compiles
         run($julia_cmd)
 
         ################################################################
-        SnoopCompileBot.precompile_activator($package_path)
+        CompileBot.precompile_activator($package_path)
 
         global SnoopCompile_ENV = false
     end
@@ -184,7 +184,7 @@ In this case, the bot-running script is placed in the same directory as the
 precompile script, so we can use `@__DIR__` to find it:
 
 ```julia
-using SnoopCompileBot
+using CompileBot
 
 snoop_bot(BotConfig("MatLang"), "\$(@__DIR__)/example_script.jl")
 ```

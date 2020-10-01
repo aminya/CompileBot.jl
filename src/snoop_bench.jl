@@ -11,7 +11,7 @@ function _snoopi_bench_cmd(snoop_script)
 
         global SnoopCompile_ENV = false
 
-        using SnoopCompileBot: timesum
+        using CompileBot: timesum
         @info( "\nTotal inference time (ms): \t" * string(timesum(data, :ms)))
     end
 end
@@ -62,7 +62,7 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
     out = quote
         package_sym = Symbol($package_name)
         ################################################################
-        using SnoopCompileBot
+        using CompileBot
 
         @info("""------------------------
         Benchmark Started
@@ -73,7 +73,7 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
         Precompile Deactivated Benchmark
         ------------------------
         """)
-        SnoopCompileBot.precompile_deactivator($package_path);
+        CompileBot.precompile_deactivator($package_path);
         ### Log the compiles
         run($julia_cmd)
         ################################################################
@@ -81,7 +81,7 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
         Precompile Activated Benchmark
         ------------------------
         """)
-        SnoopCompileBot.precompile_activator($package_path);
+        CompileBot.precompile_activator($package_path);
         ### Log the compiles
         run($julia_cmd)
         @info("""------------------------
@@ -131,7 +131,7 @@ In this case, the benchmarking script is placed in the same directory as the
 precompile script, so we can use `@__DIR__` to find it:
 
 ```julia
-using SnoopCompileBot
+using CompileBot
 
 snoop_bench(BotConfig("MatLang"), "\$(@__DIR__)/example_script.jl")
 ```

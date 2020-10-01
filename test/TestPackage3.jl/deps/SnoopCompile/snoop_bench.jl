@@ -1,4 +1,4 @@
-using SnoopCompileBot
+using CompileBot
 
 println("tests infer benchmark")
 

@@ -248,7 +248,7 @@ function add_includer(package_name::AbstractString, package_path::AbstractString
 
         if !occursin("include(\"precompile_includer.jl\")", Base.read(package_path, String))
             # TODO should we error here?
-            @warn """SnoopCompileBot failed to add `"include(\"precompile_includer.jl\")"` to $package_path. You should do that manually!"""
+            @warn """CompileBot failed to add `"include(\"precompile_includer.jl\")"` to $package_path. You should do that manually!"""
         end
     end
 

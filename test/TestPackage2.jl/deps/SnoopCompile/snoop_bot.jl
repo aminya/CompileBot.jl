@@ -1,4 +1,4 @@
-using SnoopCompileBot
+using CompileBot
 
 # using runtests:
 snoop_bot(BotConfig("TestPackage2", os = ["windows", "linux"], tmin =0.0))
