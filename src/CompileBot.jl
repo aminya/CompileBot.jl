@@ -1,4 +1,4 @@
-module SnoopCompileBot
+module CompileBot
 
 export BotConfig, snoop_bot, snoop_bench
 
@@ -149,9 +149,9 @@ function BotConfig(
     catch
         # file not found
     finally
-        if isfile(yml_path_error) && !occursin("SnoopCompileBot.postprocess()", Base.read(yml_path_error, String))
+        if isfile(yml_path_error) && !occursin("CompileBot.postprocess()", Base.read(yml_path_error, String))
             error("""
-            SnoopCompileBot is now in a separate repository, and the API is changed because of that. Call `using SnoopCompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
+            CompileBot is now in a separate repository, and the API is changed because of that. Call `using CompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/CompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
             """)
         end
     end

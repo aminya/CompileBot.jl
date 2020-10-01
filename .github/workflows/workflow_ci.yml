@@ -20,14 +20,14 @@ jobs:
           - ./test/TestPackage1.jl
     steps:
       - uses: actions/checkout@v2
-      - name: Add SnoopCompileBot and friends
+      - name: Add CompileBot and friends
         run: |
           julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: Install dependencies
         working-directory: ${{ matrix.test_package }}
         run: |
           julia --code-coverage=user --project -e 'using Pkg; Pkg.instantiate();'
-          julia --code-coverage=user -e "using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();"
+          julia --code-coverage=user -e "using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using CompileBot; CompileBot.addtestdep();"
       - name: Generating precompile files
         working-directory: ${{ matrix.test_package }}
         run: julia --code-coverage=user --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'
@@ -52,14 +52,14 @@ jobs:
           - ./test/TestPackage2.jl
     steps:
       - uses: actions/checkout@v2
-      - name: Add SnoopCompileBot and friends
+      - name: Add CompileBot and friends
         run: |
           julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: Install dependencies
         working-directory: ${{ matrix.test_package }}
         run: |
           julia --code-coverage=user --project -e 'using Pkg; Pkg.instantiate();'
-          julia --code-coverage=user -e "using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();"
+          julia --code-coverage=user -e "using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using CompileBot; CompileBot.addtestdep();"
       - name: Generating precompile files
         working-directory: ${{ matrix.test_package }}
         run: julia --code-coverage=user --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'
@@ -88,14 +88,14 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.version }}
-      - name: Add SnoopCompileBot and friends
+      - name: Add CompileBot and friends
         run: |
           julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
       - name: Install dependencies
         working-directory: ${{ matrix.test_package }}
         run: |
           julia --code-coverage=user --project -e 'using Pkg; Pkg.instantiate();'
-          julia --code-coverage=user -e "using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using SnoopCompileBot; SnoopCompileBot.addtestdep();"
+          julia --code-coverage=user -e "using Pkg; Pkg.develop(PackageSpec(; path=pwd())); using CompileBot; CompileBot.addtestdep();"
       - name: Generating precompile files
         working-directory: ${{ matrix.test_package }}
         run: julia --code-coverage=user --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'
@@ -129,9 +129,9 @@ jobs:
           path: ${{ matrix.test_package }}/artifact
       - run: |
           julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
-      - name: SnoopCompileBot postprocess
+      - name: CompileBot postprocess
         run: |
-          julia --code-coverage=user -e 'using SnoopCompileBot; SnoopCompileBot.postprocess();'
+          julia --code-coverage=user -e 'using CompileBot; CompileBot.postprocess();'
         working-directory: ${{ matrix.test_package }}
 
       # BUG coverage is not merged!

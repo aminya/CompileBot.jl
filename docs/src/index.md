@@ -1,14 +1,14 @@
-# SnoopCompileBot.jl
+# CompileBot.jl
 
-SnoopCompileBot automatically generates precompilation data for your Julia packages, which results in reducing the time it takes for runtime compilation, loading, and startup.
+CompileBot automatically generates precompilation data for your Julia packages, which results in reducing the time it takes for runtime compilation, loading, and startup.
 
 # Installation
 ```julia
 using Pkg
-Pkg.add("SnoopCompileBot")
+Pkg.add("CompileBot")
 ```
 ```julia
-using SnoopCompileBot
+using CompileBot
 ```
 
 
@@ -46,7 +46,7 @@ with a name like `snoop_bot.jl`.
 The example below (from [here](https://github.com/aminya/Zygote.jl/blob/SnoopCompile/deps/SnoopCompile/snoop_bot.jl)) supports multiple operating systems, multiple Julia versions, and excludes a function whose precompilation would be problematic:
 
 ```julia
-using SnoopCompileBot
+using CompileBot
 
 botconfig = BotConfig(
   "Zygote";                            # package name (the one this configuration lives in)
@@ -63,7 +63,7 @@ snoop_bot(
 If you choose to use your "runtests.jl" file as your precompile script, configuration can be as simple as specifying just the name of the package:
 
 ```julia
-using SnoopCompileBot
+using CompileBot
 
 snoop_bot(BotConfig("MyPackage"))
 ```
@@ -147,9 +147,9 @@ jobs:
       - name: Install dependencies
         run: |
           julia --project -e 'using Pkg; Pkg.instantiate();'
-          julia -e 'using Pkg; Pkg.add( PackageSpec(name="SnoopCompileBot", version = "2") );
+          julia -e 'using Pkg; Pkg.add( PackageSpec(name="CompileBot", version = "2") );
                     Pkg.develop(PackageSpec(; path=pwd()));
-                    using SnoopCompileBot; SnoopCompileBot.addtestdep();'
+                    using CompileBot; CompileBot.addtestdep();'
 
       - name: Generating precompile files
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bot.jl")'   # NOTE: notice the path
@@ -171,9 +171,9 @@ jobs:
       - name: Download all
         uses: actions/download-artifact@v2
 
-      - name: SnoopCompileBot postprocess
-        run: julia -e 'using Pkg; Pkg.add( PackageSpec(name="SnoopCompileBot", version = "2") );
-                       using SnoopCompileBot; SnoopCompileBot.postprocess();'
+      - name: CompileBot postprocess
+        run: julia -e 'using Pkg; Pkg.add( PackageSpec(name="CompileBot", version = "2") );
+                       using CompileBot; CompileBot.postprocess();'
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
@@ -202,6 +202,6 @@ Examples of such files in projects can be found in other packages, for example
 
     Upgrading from an old SnoopCompile bot:
 
-    SnoopCompileBot is now in a separate repository, and the API is changed because of that. Call `using SnoopCompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/SnoopCompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
+    CompileBot is now in a separate repository, and the API is changed because of that. Call `using CompileBot` directly in your snoop scripts and update your workflow based on this guide: [Configure the bot to run with a GitHub Action file]( https://aminya.github.io/CompileBot.jl/dev/#Configure-the-bot-to-run-with-a-GitHub-Action-file-1)
 
     In addition to the previous steps, you should also remove `_precompile_()` and any other code that includes a `_precompile_()` function. In the new version, SnoopCompile automatically creates the appropriate code.

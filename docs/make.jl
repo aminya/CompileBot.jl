@@ -1,14 +1,14 @@
 using Documenter
-using SnoopCompileBot
+using CompileBot
 
 makedocs(
-    modules=[SnoopCompileBot],
+    modules=[CompileBot],
     authors="Amin Yahyaabadi",
-    repo="https://github.com/aminya/SnoopCompileBot.jl/blob/{commit}{path}#L{line}",
-    sitename="SnoopCompileBot.jl",
+    repo="https://github.com/aminya/CompileBot.jl/blob/{commit}{path}#L{line}",
+    sitename="CompileBot.jl",
     format=Documenter.HTML(;
         prettyurls = prettyurls = get(ENV, "CI", nothing) == "true",
-        # canonical="https://aminya.github.io/SnoopCompileBot.jl",
+        # canonical="https://aminya.github.io/CompileBot.jl",
         # assets=String[],
     ),
     pages=[
@@ -18,6 +18,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/aminya/SnoopCompileBot.jl.git",
+    repo = "github.com/aminya/CompileBot.jl.git",
     push_preview=true
 )
