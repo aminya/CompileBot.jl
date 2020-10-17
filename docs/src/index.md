@@ -147,7 +147,7 @@ jobs:
       - name: Install dependencies
         run: |
           julia --project -e 'using Pkg; Pkg.instantiate();'
-          julia -e 'using Pkg; Pkg.add( PackageSpec(name="CompileBot", version = "2") );
+          julia -e 'using Pkg; Pkg.add( PackageSpec(name="CompileBot", version = "1") );
                     Pkg.develop(PackageSpec(; path=pwd()));
                     using CompileBot; CompileBot.addtestdep();'
 
@@ -172,7 +172,7 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: CompileBot postprocess
-        run: julia -e 'using Pkg; Pkg.add( PackageSpec(name="CompileBot", version = "2") );
+        run: julia -e 'using Pkg; Pkg.add( PackageSpec(name="CompileBot", version = "1") );
                        using CompileBot; CompileBot.postprocess();'
 
       - name: Create Pull Request
