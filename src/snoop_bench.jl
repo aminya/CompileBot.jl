@@ -150,7 +150,7 @@ function snoop_bench(config::BotConfig, path_to_example_script::String, test_mod
 end
 
 """
-    snoop_bench(config::BotConfig, test_modul::Module = Main)
+    snoop_bench(config::BotConfig, test_modul::Module = Main; snoop_mode::Symbol = :auto)
 
 Benchmark your precompile files using the package's `runtests.jl` file.
 
@@ -165,7 +165,7 @@ function snoop_bench(config::BotConfig, test_modul::Module = Main; snoop_mode::S
 end
 
 """
-    snoop_bench(config::BotConfig, expression::Expr, test_modul::Module = Main)
+    snoop_bench(config::BotConfig, expression::Expr, test_modul::Module = Main; snoop_mode::Symbol = :auto)
 
 Benchmark your precompile files by evaluating an expression, for example `:(using MyPackage)`.
 Interpolation and macros are not supported.
