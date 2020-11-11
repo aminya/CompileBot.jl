@@ -46,7 +46,7 @@ function _snoop_analysis_bot(snooping_code, package_name, precompile_folder, sub
             end
             """)
         else # if any precompilation script is generated
-            onlypackage = Dict( packageSym => sort(pc[packageSym]) )
+            onlypackage = Dict( packageSym => Base.sort(pc[packageSym]) )
             SnoopCompile.write($precompile_folder, onlypackage)
             @info "precompile signatures were written to $($precompile_folder)"
         end
