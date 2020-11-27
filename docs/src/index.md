@@ -128,9 +128,16 @@ jobs:
       fail-fast: false
 
       matrix:
-        version:   # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
-          - '1.5.2'
+        # NOTE: only keep the versions you want to support
+        # NOTE: if not using `yml_path`, these should match the version in `BotConfig`
+        version:
+          - 'nightly'
+          - '1.5.3'
+          - '1.4.2'
           - '1.3.1'
+          - '1.2.0'
+          - '1.1.1'
+          - '1.0.5'
         os:        # NOTE: if not using `yml_path`, these should match the os in `BotConfig`
           - ubuntu-latest
           - windows-latest
