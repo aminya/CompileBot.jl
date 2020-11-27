@@ -147,7 +147,7 @@ jobs:
           commit-message: Update precompile_*.jl file
           title: "Test: Update precompiles"
           labels: Test_SnoopCompile
-          branch: "Test_SnoopCompile_AutoPR"
+          branch: "Test_SnoopCompile_AutoPR_${{ github.ref }}"
 
   Skip:
     if: "contains(github.event.head_commit.message, '[skip ci]')"
