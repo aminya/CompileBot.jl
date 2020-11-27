@@ -183,7 +183,7 @@ jobs:
           commit-message: Update precompile_*.jl file
           title: "[AUTO] Update precompiles"
           labels: SnoopCompile
-          branch: "SnoopCompile_AutoPR_${{ env.GITHUB_REF }}"
+          branch: "Test_SnoopCompile_AutoPR_${{ github.ref }}"
 
 
   Skip:
