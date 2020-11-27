@@ -21,11 +21,21 @@ function postprocess()
     precompile_files_regex =  r"precompile\/.*precompile_.*\.jl"
     git_checkout_all(["src/precompile_includer.jl", precompile_files_regex, package_entry_regex], pwd())
 
+    # ignore whitespace
     # last line of src/Package.jl needs to be kept!
     # https://stackoverflow.com/a/49899908/7910299
-    run(`git diff -b \> gitdiffb`)
-    run(`git reset --hard`)
-    run(`git apply --ignore-space-change gitdiffb`)
+    try
+      diff_file = tempname()
+      run(pipeline(
+        `git diff --ignore-space-change --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --ignore-space-at-eol`,
+        diff_file,
+      ))
+      run(`git stash`)
+      run(`git apply  --ignore-space-change --ignore-whitespace --whitespace=fix $diff_file`)
+    catch
+      @warn "The generated PR includes whitespace changes. Please commit the generated .gitattributes to prevent these changes"
+      run(`git stash pop`)
+    end
 
     # Format precompile_includer.jl
     format_file(joinpath(pwd(), "src/precompile_includer.jl"))
