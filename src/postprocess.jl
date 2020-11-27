@@ -17,7 +17,14 @@ function postprocess()
     rm(artifact_path, recursive=true)
 
     # Discard unrelated changes
-    git_checkout_all(["src/precompile_includer.jl", r"precompile/.*precompile_.*\.jl"], pwd())
+    package_entry_regex = r"src\/[A-Z][^\/]*\.jl"
+    git_checkout_all(["src/precompile_includer.jl", r"precompile/.*precompile_.*\.jl", package_entry_regex], pwd())
+
+    # last line of src/Package.jl needs to be kept!
+    # https://stackoverflow.com/a/49899908/7910299
+    run(`git diff -b \> gitdiffb`)
+    run(`git reset --hard`)
+    run(`git apply --ignore-space-change gitdiffb`)
 
     # Format precompile_includer.jl
     format_file(joinpath(pwd(), "src/precompile_includer.jl"))
