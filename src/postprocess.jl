@@ -19,7 +19,7 @@ function postprocess()
     # Discard unrelated changes
     package_entry_regex = r"src\/[A-Z][^\/]*\.jl"
     precompile_files_regex =  r"precompile\/.*precompile_.*\.jl"
-    git_checkout_all(["src/precompile_includer.jl", precompile_files_regex, package_entry_regex], pwd())
+    git_checkout_all([".gitignore", "src/precompile_includer.jl", precompile_files_regex, package_entry_regex], pwd())
 
     # ignore whitespace
     # last line of src/Package.jl needs to be kept!
