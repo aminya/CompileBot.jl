@@ -158,6 +158,7 @@ jobs:
         run: julia --project -e 'include("deps/SnoopCompile/snoop_bench.jl")' # NOTE: optional, if have benchmark file
 
       - name: Upload all
+        continue-on-error: true # due to connection issues
         uses: actions/upload-artifact@v2.0.1
         with:
           path: ./
