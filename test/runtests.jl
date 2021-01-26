@@ -387,6 +387,69 @@ bottestdir = GoodPath(@__DIR__)
             end # precompile_enclosure
             """), includer_text)
         end
+
+        @testset "yes os, yes else_os, single os, no version, no else_version" begin
+            CompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux"], "linux", nothing, nothing)
+            includer_text = stripall(Base.read(includer_path, String))
+            @test occursin("ismultios=true", includer_text)
+            @test occursin("ismultiversion=false", includer_text)
+
+            @test occursin(stripall("""
+            @static if !should_precompile
+                # nothing
+            elseif !ismultios && !ismultiversion
+                @static if isfile(joinpath(@__DIR__, "$precompiles_rootpath_rel/precompile_$package_name.jl"))
+                    include("$precompiles_rootpath_rel/precompile_$package_name.jl")
+                    _precompile_()
+                end
+            else
+                @static if isfile(joinpath(@__DIR__, "$precompiles_rootpath_rel/linux/precompile_$package_name.jl"))
+                    include("$precompiles_rootpath_rel/linux/precompile_$package_name.jl")
+                    _precompile_()
+                end
+
+            end
+            """), includer_text)
+        end
+
+        @testset "yes os, yes else_os, single os, yes version, yes else_version" begin
+            CompileBot.new_includer_file(package_name, package_path, precompiles_rootpath, ["linux"], "linux", [v"1.2", v"1.5.0"], v"1.2")
+            includer_text = stripall(Base.read(includer_path, String))
+            @test occursin("ismultios=true", includer_text)
+            @test occursin("ismultiversion=true", includer_text)
+
+            @test occursin(stripall("""
+            @static if !should_precompile
+                # nothing
+            elseif !ismultios && !ismultiversion
+                @static if isfile(joinpath(@__DIR__, "$precompiles_rootpath_rel/precompile_$package_name.jl"))
+                    include("$precompiles_rootpath_rel/precompile_$package_name.jl")
+                    _precompile_()
+                end
+            else
+                @static if v"1.2.0-DEV" <= VERSION <= v"1.2.9"
+                    @static if isfile(joinpath(@__DIR__, "$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl"))
+                        include("$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl")
+                        _precompile_()
+                    end
+                elseif v"1.5.0-DEV" <= VERSION <= v"1.5.9"
+                    @static if isfile(joinpath(@__DIR__, "$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl"))
+                        include("$precompiles_rootpath_rel/linux/1.5/precompile_$package_name.jl")
+                        _precompile_()
+                    end
+                else
+                    @static if isfile(joinpath(@__DIR__, "$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl"))
+                        include("$precompiles_rootpath_rel/linux/1.2/precompile_$package_name.jl")
+                        _precompile_()
+                    end
+                end
+
+
+            end
+            """), includer_text)
+        end
+
+
         rm(includer_path)
     end
 
