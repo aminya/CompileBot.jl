@@ -1,7 +1,7 @@
 name = "CompileBot"
 uuid = "877fb49a-56b0-480a-9049-319c0c353852"
 author = ["Amin Yahyaabadi <aminyahyaabadi74@gmail.com>"]
-version = "1.0.5"
+version = "1.0.6"
 
 [deps]
 FilePathsBase = "48062228-2e41-5def-b9a4-89aafe57970f"
