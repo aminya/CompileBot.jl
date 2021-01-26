@@ -88,6 +88,9 @@ end
 Helper function for multios code generation
 """
 function _multios(package_name, precompiles_rootpath, os_in, else_os, ismultiversion, version = nothing, else_version = nothing)
+    if length(os_in) == 1 && os_in[1] == else_os
+        return _multios_single_os(package_name, precompiles_rootpath, else_os, ismultiversion, version, else_version)
+    end
     os = similar(os_in, Any)
     os[:] = os_in[:]
 
@@ -132,6 +135,25 @@ function _multios(package_name, precompiles_rootpath, os_in, else_os, ismultiver
     return multistr
 end
 
+function _multios_single_os(package_name, precompiles_rootpath, os_single, ismultiversion, version = nothing, else_version = nothing)
+    multistr = ""
+
+    if ismultiversion
+        multiversionstr = _multiversion(package_name, precompiles_rootpath, version, else_version, os_single)
+        multistr = multistr * """
+            $multiversionstr
+        """
+    else
+        precompile_file_name = "$precompiles_rootpath/$os_single/precompile_$package_name.jl"
+        multistr = multistr * """
+            @static if isfile(joinpath(@__DIR__, "$precompile_file_name"))
+                include("$precompile_file_name")
+                _precompile_()
+            end
+        """
+    end
+    return multistr
+end
 
 """
 Helper function for multi Julia version code generation
