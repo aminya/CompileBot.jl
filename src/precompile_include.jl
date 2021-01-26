@@ -70,7 +70,7 @@ function new_includer_file(
     @static if !should_precompile
         # nothing
     elseif !ismultios && !ismultiversion
-        @static if (isfile("$default_precompile_file_name"))
+        @static if isfile(joinpath(@__DIR__, "$default_precompile_file_name"))
             include("$default_precompile_file_name")
             _precompile_()
         end
@@ -118,7 +118,7 @@ function _multios(package_name, precompiles_rootpath, os_in, else_os, ismultiver
         else
             precompile_file_name = "$precompiles_rootpath/$eachos/precompile_$package_name.jl"
             multistr = multistr * """
-                @static if (isfile("$precompile_file_name"))
+                @static if isfile(joinpath(@__DIR__, "$precompile_file_name"))
                     include("$precompile_file_name")
                     _precompile_()
                 end
@@ -167,7 +167,7 @@ function _multiversion(package_name, precompiles_rootpath, version_in, else_vers
 
         precompile_file_name = "$precompiles_rootpath/$eachos/$(VersionFloat(eachversion))/precompile_$package_name.jl"
         multiversionstr = multiversionstr * """
-            @static if (isfile("$precompile_file_name"))
+            @static if isfile(joinpath(@__DIR__, "$precompile_file_name"))
                 include("$precompile_file_name")
                 _precompile_()
             end
