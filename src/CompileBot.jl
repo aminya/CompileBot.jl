@@ -5,6 +5,7 @@ export BotConfig, snoop_bot, snoop_bench
 using Core: MethodInstance, CodeInfo
 using YAML
 
+
 if VERSION <=  v"1.1"
     isnothing(x) = x === nothing
 end
@@ -13,6 +14,7 @@ if VERSION <=  v"1.2"
     Base.print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Nothing) = Base.print(io, "")
     Base.string(::Nothing) = ""
 end
+
 
 ################################################################
 const UStrings = Union{AbstractString,Regex,AbstractChar}
