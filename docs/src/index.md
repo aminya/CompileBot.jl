@@ -20,13 +20,17 @@ This bot can be used offline or online.
 
 Follow these steps to set up SnoopCompile bot for your package.
 
-## 1 - Setting up the SnoopCompile bot configuration folder
+## 1 - Add Julia to your system PATH (if you haven't done that already)
+
+The CompileBot spawns a new Julia process when running the `snoop_bot` function. Therefore, you need to make sure that Julia is added to your system PATH. See the official documentation on how to do that: https://julialang.org/downloads/platform/. To test whether Julia has been added successfully, simply open a terminal and type in `julia`. If everything has been configured correctly, the Julia REPL should be invoked now.
+
+## 2 - Setting up the SnoopCompile bot configuration folder
 
 Here, we will configure the bot in a directory `deps/SnoopCompile/` that should be added to your repository.
 All configuration files for the SnoopCompile bot should go in this directory.
 If you choose a different name for this directory, be sure to change the path in the configuration steps below.
 
-## 2 - Create the precompile script
+## 3 - Create the precompile script
 
 You will need a [precompile script](@ref pcscripts), here called `example_script.jl`, that "exercises" the functionality you'd like to precompile.
 If you write a dedicated precompile script, place it in the bot configuration folder.
@@ -35,7 +39,7 @@ Alternatively, you may use your package's `"runtests.jl"` file.
 While less precise about which functionality is worthy of precompilation,
 this can slightly simplify configuration as described below.
 
-## 3 - Create the script that runs `snoop_bot`
+## 4 - Create the script that runs `snoop_bot`
 
 The `snoop_bot` function generates precompile statements and writes them to
 a file that will be incorporated into your package.
@@ -90,7 +94,7 @@ with `snoop_bot(config, :(using MyPackage))`.
 
 You can override this default behavior with a keyword argument, see [`snoop_bot`](@ref) for details.
 
-## 4 - Optionally test the impact of your precompiles with `snoop_bench`
+## 5 - Optionally test the impact of your precompiles with `snoop_bench`
 
 Call [`snoop_bench`](@ref) to measure the effect of adding precompile files.
 It takes the same parameters as `snoop_bot` above.
@@ -101,7 +105,7 @@ instead.
 Note that benchmarking has the option of different performance metrics,
 `snoop_mode=:snoopi` or `snoop_mode=:run_time` depending on whether you want to measure inference time or the run time of your precompile script.
 
-## 5 - Configure the bot to run with a GitHub Action file
+## 6 - Configure the bot to run with a GitHub Action file
 
 You can create the precompile files automatically when you merge pull requests to `master` by adding a workflow file under `.github/workflows/SnoopCompile.yml`.
 This file should have content such as the example below.
