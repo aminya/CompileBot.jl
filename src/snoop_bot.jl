@@ -120,7 +120,7 @@ function _snoop_bot_expr(config::BotConfig, snoop_script, test_modul::Module; sn
         code_coverage = "none"
     end
 
-    julia_cmd = `julia --code-coverage=$code_coverage --project=@. -e $snooping_analysis_code`
+    julia_cmd = `$(Base.julia_cmd()) --code-coverage=$code_coverage --project=@. -e $snooping_analysis_code`
 
     addpkg_ifnotfound(:SnoopCompileCore, test_modul)
     addpkg_ifnotfound(:SnoopCompile, test_modul)

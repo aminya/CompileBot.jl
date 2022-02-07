@@ -220,11 +220,11 @@ function pathof_noload(package_name::String)
     if isnothing(path)
         cmd = "import $package_name; print(pathof($package_name))"
         try
-            path = Base.read(`julia -e $cmd`, String)
+            path = Base.read(`$(Base.julia_cmd()) -e $cmd`, String)
             return GoodPath(path)
         catch
             try
-                path = Base.read(`julia --project=@. -e $cmd`, String)
+                path = Base.read(`$(Base.julia_cmd()) --project=@. -e $cmd`, String)
                 return GoodPath(path)
             catch
                 @error "Couldn't find the path of $package_name"
