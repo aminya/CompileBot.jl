@@ -3,7 +3,7 @@ function _snoopi_bot(snoop_script, tmin)
     return quote
         using SnoopCompileCore
 
-        data = @snoopi tmin=$tmin begin
+        __the_data__ = @snoopi tmin=$tmin begin
             $snoop_script
         end
     end
@@ -19,14 +19,13 @@ function _snoopc_bot(snoop_script)
 
         using SnoopCompile
 
-        data = SnoopCompile.read("compiles.log")[2]
+        __the_data__ = SnoopCompile.read("compiles.log")[2]
         Base.rm("compiles.log", force = true)
     end
 end
 
 function _snoop_analysis_bot(snooping_code, package_name, precompile_folder, subst, exclusions, check_eval)
     return quote
-        packageSym = Symbol($package_name)
 
         ################################################################
         @info "Processsing the generated precompile signatures"
@@ -34,21 +33,23 @@ function _snoop_analysis_bot(snooping_code, package_name, precompile_folder, sub
         using SnoopCompile
 
         ### Parse the compiles and generate precompilation scripts
-        pc = SnoopCompile.parcel(data; subst = $subst, exclusions = $exclusions, check_eval = $check_eval)
-        if !haskey(pc, packageSym)
-            @warn "no precompile signature is found for $($package_name). Don't load the package before snooping. Restart your Julia session."
-            if !isdir($precompile_folder)
-                mkpath($precompile_folder)
+        let packageSym = Symbol($package_name),
+            pc = SnoopCompile.parcel(__the_data__; subst = $subst, exclusions = $exclusions, check_eval = $check_eval)
+            if !haskey(pc, packageSym)
+                @warn "no precompile signature is found for $($package_name). Don't load the package before snooping. Restart your Julia session."
+                if !isdir($precompile_folder)
+                    mkpath($precompile_folder)
+                end
+                Base.write("$($precompile_folder)/precompile_$($package_name).jl", """
+                function _precompile_()
+                    # nothing
+                end
+                """)
+            else # if any precompilation script is generated
+                onlypackage = Dict( packageSym => Base.sort(pc[packageSym]) )
+                SnoopCompile.write($precompile_folder, onlypackage)
+                @info "precompile signatures were written to $($precompile_folder)"
             end
-            Base.write("$($precompile_folder)/precompile_$($package_name).jl", """
-            function _precompile_()
-                # nothing
-            end
-            """)
-        else # if any precompilation script is generated
-            onlypackage = Dict( packageSym => Base.sort(pc[packageSym]) )
-            SnoopCompile.write($precompile_folder, onlypackage)
-            @info "precompile signatures were written to $($precompile_folder)"
         end
     end
 end

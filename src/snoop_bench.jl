@@ -5,14 +5,14 @@ function _snoopi_bench_cmd(snoop_script)
         global SnoopCompile_ENV = true
         using SnoopCompileCore
 
-        data = @snoopi tmin=$tmin begin
+        __the_data__ = @snoopi tmin=$tmin begin
             $snoop_script
         end
 
         global SnoopCompile_ENV = false
 
         using CompileBot: timesum
-        @info( "\nTotal inference time (ms): \t" * string(timesum(data, :ms)))
+        @info( "\nTotal inference time (ms): \t" * string(timesum(__the_data__, :ms)))
     end
 end
 
