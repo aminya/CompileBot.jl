@@ -44,7 +44,7 @@ Example: `else_os = "linux"`
 
 Example: `version = [v"1.1",v"1.5.0", "nightly"]`
 
-It is assumed that the generated precompile signatures are valid for patch versions of Julia (e.g. givingv"1.5.0" supports v"1.4.0" to v"1.4.9").
+It is assumed that the generated precompile signatures are valid for patch versions of Julia (e.g. givingv"1.5.0" supports v"1.4.0" to v"1.4.999").
 
 - `else_version`: the Julia version used to generate the default signatures for other `version`s.
 Not passing this argument skips precompilation on any Julia version other than those explicitly listed in `version`.
