@@ -150,13 +150,13 @@ function _multiversion(package_name, precompiles_rootpath, version_in, else_vers
 
         if iversion == 1
             lowerbound = VersionNumber(eachversion.major, eachversion.minor, 0, ("DEV",))
-            higherbound = VersionNumber(eachversion.major, eachversion.minor, 9)
+            higherbound = VersionNumber(eachversion.major, eachversion.minor, 999)
             version_phrase = "@static if v\"$lowerbound\" <= VERSION <= v\"$higherbound\""
         elseif iversion == version_length
             version_phrase = "else"
         else
             lowerbound = VersionNumber(eachversion.major, eachversion.minor, 0, ("DEV",))
-            higherbound = VersionNumber(eachversion.major, eachversion.minor, 9)
+            higherbound = VersionNumber(eachversion.major, eachversion.minor, 999)
             version_phrase = "elseif v\"$lowerbound\" <= VERSION <= v\"$higherbound\""
         end
         multiversionstr = multiversionstr * "$version_phrase \n"
