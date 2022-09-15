@@ -224,7 +224,7 @@ function pathof_noload(package_name::String)
             return GoodPath(path)
         catch
             try
-                path = Base.read(`$(Base.julia_cmd()) --project=@. -e $cmd`, String)
+                path = Base.read(`$(Base.julia_cmd()) --project=$(Base.active_project()) -e $cmd`, String)
                 return GoodPath(path)
             catch
                 @error "Couldn't find the path of $package_name"
