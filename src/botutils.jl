@@ -257,9 +257,7 @@ function addtestdep()
     end
 
     if !isnothing(test_deps)
-        for (name, uuid) in test_deps
-            Pkg.add(Pkg.PackageSpec(name = name, uuid = uuid))
-        end
+        Pkg.add([Pkg.PackageSpec(name = name, uuid = uuid) for (name, uuid) in test_deps])
     end
 end
 
