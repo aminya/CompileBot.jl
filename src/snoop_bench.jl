@@ -56,7 +56,7 @@ function _snoop_bench(config::BotConfig, snoop_script::Expr, test_modul::Module 
         code_coverage = "none"
     end
 
-    julia_cmd = `$(Base.julia_cmd()) --code-coverage=$code_coverage --project=@. -e $snooping_code`
+    julia_cmd = `$(Base.julia_cmd()) --code-coverage=$code_coverage --project=$(Base.active_project()) -e $snooping_code`
 
     addpkg_ifnotfound(:SnoopCompileCore, test_modul)
     out = quote
