@@ -19,7 +19,7 @@ jobs:
         test_package:
           - ./test/TestPackage1.jl
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Add CompileBot and friends
         run: |
           julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
@@ -51,7 +51,7 @@ jobs:
         test_package:
           - ./test/TestPackage2.jl
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Add CompileBot and friends
         run: |
           julia --code-coverage=user -e 'using Pkg; Pkg.develop(PackageSpec(; path=pwd()));'
@@ -84,7 +84,7 @@ jobs:
         test_package:
           - ./test/TestPackage3.jl
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.version }}
@@ -121,7 +121,7 @@ jobs:
         test_package:
           - ./test/TestPackage3.jl
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download all
         uses: actions/download-artifact@v2
         with:
