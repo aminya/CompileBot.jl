@@ -123,7 +123,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Download all
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: artifact
           path: ${{ matrix.test_package }}/artifact
