@@ -107,7 +107,7 @@ jobs:
         with:
           file: lcov.info
       - name: Upload all
-        uses: actions/upload-artifact@v2.0.1
+        uses: actions/upload-artifact@v3.1.2
         with:
           path: ${{ matrix.test_package }}
 
